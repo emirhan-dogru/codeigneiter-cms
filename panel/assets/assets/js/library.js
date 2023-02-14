@@ -56,8 +56,8 @@ var LIBS = {
     "assets/libs/misc/jvectormap/maps/jquery-jvectormap-africa-mill.js",
   ],
   summernote: [
-    "assets/libs/bower/summernote/dist/summernote.css",
-    "assets/libs/bower/summernote/dist/summernote.min.js",
+    "http://localhost/root/cms/panel/assets/libs/bower/summernote/dist/summernote.css",
+    "http://localhost/root/cms/panel/assets/libs/bower/summernote/dist/summernote.min.js",
   ],
   DataTable: [
     "assets/libs/misc/datatables/datatables.min.css",
