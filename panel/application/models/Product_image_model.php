@@ -1,7 +1,7 @@
 <?php
-class Product_model extends CI_Model
+class Product_image_model extends CI_Model
 {
-    public $tableName = "products";
+    public $tableName = "product_images";
 
     public function __construct()
     {

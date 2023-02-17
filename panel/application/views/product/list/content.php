@@ -14,29 +14,31 @@
                 </div>
             <?php } else { ?>
 
-                <table class="table table-hover table-striped">
+                <table class="table table-hover table-bordered table-striped content-container">
                     <thead>
-                        <th>#id</th>
+                        <th><i class="fa fa-reorder"></i></th>
+                        <th class="w50">#id</th>
                         <th>url </th>
                         <th>Başlık</th>
                         <th>Açıklama</th>
                         <th>Durumu</th>
                         <td>İşlem</td>
                     </thead>
-                    <tbody>
+                    <tbody class="sortable" data-url="<?= base_url('product/rankSetter'); ?>">
                         <?php foreach ($products as $product) { ?>
-                            <tr>
+                            <tr id="order-<?= $product->id ?>">
+                                <td class="order"><i class="fa fa-reorder"></i></td>
                                 <td>#<?= $product->id ?></td>
                                 <td><?= $product->url ?></td>
                                 <td><?= $product->title ?></td>
                                 <td><?= $product->description ?></td>
                                 <td>
-                                    <input type="checkbox" data-switchery data-color="#10c469" <?= $product->isActive ? 'checked' : '' ?> />
-
+                                    <input class="isActive" data-url="<?= base_url("product/isActiveSetter/$product->id") ?>" type="checkbox" data-switchery data-color="#10c469" <?= $product->isActive ? 'checked' : '' ?> />
                                 </td>
                                 <td>
-                                    <a href="<?= base_url("product/delete/$product->id") ?>" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> Sil</a>
+                                    <button data-url="<?= base_url("product/delete/$product->id") ?>" class="btn btn-sm btn-danger btn-remove"><i class="fa fa-remove"></i> Sil</button>
                                     <a href="<?= base_url("product/update_form/$product->id") ?>" class="btn btn-info btn-sm btn-outline"><i class="fa fa-edit"></i> Düzenle</a>
+                                    <a href="<?= base_url("product/image_form/$product->id") ?>" class="btn btn-success btn-sm"><i class="fa fa-image"></i> Resimler</a>
                                 </td>
                             </tr>
                         <?php } ?>
