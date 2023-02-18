@@ -1,0 +1,1 @@
+<script src="<?= base_url("assets"); ?>/assets/js/news.type.select.js"></script>

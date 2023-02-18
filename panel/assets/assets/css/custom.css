@@ -26,3 +26,7 @@ th {
 .sortable:hover {
   cursor: pointer;
 }
+
+.video-content {
+  display: none;
+}

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Product extends CI_Controller
+class News extends CI_Controller
 {
 
 	public $viewFolder = "";
@@ -11,10 +11,9 @@ class Product extends CI_Controller
 		//CI_Controller kütüphanesindeki constractları da çalıştır
 		parent::__construct();
 
-		$this->viewFolder = "product";
+		$this->viewFolder = "news";
 
-		$this->load->model("product_model");
-		$this->load->model("product_image_model");
+		$this->load->model("news_model");
 
 		if (!get_active_user()) {
 			redirect(base_url('login'));
@@ -28,7 +27,7 @@ class Product extends CI_Controller
 		$data->subViewFolder = "list";
 
 		/* Veritabanından verilerin getirilmesi  */
-		$data->products = $this->product_model->get_all([], 'rank ASC');
+		$data->newsData = $this->news_model->get_all([], 'rank ASC');
 
 		$this->load->view("{$data->viewFolder}/{$data->subViewFolder}/index", $data);
 	}
@@ -47,6 +46,19 @@ class Product extends CI_Controller
 		$this->load->library("form_validation");
 
 		//kurallar yazılır
+		$news_type = $this->input->post('news_type');
+
+		if ($news_type == 'image') {
+			if ($_FILES['img_url']['name'] == '') {
+				$alert = ['text' => 'Resim seçmeniz gerekiyor!', 'type' => 'error'];
+				$this->session->set_flashdata("alert", $alert);
+				redirect(base_url("news/new_form"));
+				die();
+			}
+		} else if ($news_type == 'video') {
+			$this->form_validation->set_rules("video_url", "Video Url", "required|trim");
+		}
+
 		$this->form_validation->set_rules("title", "Başlık", "required|trim");
 
 		$this->form_validation->set_message([
@@ -66,7 +78,7 @@ class Product extends CI_Controller
 
 			$this->load->view("{$data->viewFolder}/{$data->subViewFolder}/index", $data);
 		} else {
-			$insert = $this->product_model->add([
+			$insert = $this->news_model->add([
 				"title" => $this->input->post("title"),
 				"description" => $this->input->post("description"),
 				"url" => seo($this->input->post("title")),
@@ -82,7 +94,7 @@ class Product extends CI_Controller
 			} else {
 				$alert = ['text' => 'İşlem Başarısız', 'type' => 'error'];
 				$this->session->set_flashdata("alert", $alert);
-				redirect(base_url("product/add"));
+				redirect(base_url("product/new_form"));
 			}
 		}
 
@@ -105,7 +117,7 @@ class Product extends CI_Controller
 		$data->subViewFolder = "update";
 
 		/* Veritabanından verilerin getirilmesi  */
-		$data->product = $this->product_model->get(['id' => $id]);
+		$data->product = $this->news_model->get(['id' => $id]);
 
 		$this->load->view("{$data->viewFolder}/{$data->subViewFolder}/index", $data);
 	}
@@ -128,11 +140,11 @@ class Product extends CI_Controller
 			$data->viewFolder = $this->viewFolder;
 			$data->subViewFolder = "update";
 			$data->form_error = true;
-			$data->product = $this->product_model->get(['id' => $id]);
+			$data->product = $this->news_model->get(['id' => $id]);
 
 			$this->load->view("{$data->viewFolder}/{$data->subViewFolder}/index", $data);
 		} else {
-			$update = $this->product_model->update(
+			$update = $this->news_model->update(
 				['id' => $id],
 				[
 					"title" => $this->input->post("title"),
@@ -155,7 +167,7 @@ class Product extends CI_Controller
 
 	public function delete($id)
 	{
-		$delete = $this->product_model->delete(['id' => $id]);
+		$delete = $this->news_model->delete(['id' => $id]);
 
 		//todo alert sistemi eklenecek	
 		if ($delete) {
@@ -174,7 +186,7 @@ class Product extends CI_Controller
 		if (isset($id)) {
 			$isActive = $this->input->post("data") == 'true' ? 1 : 0;
 
-			$this->product_model->update(['id' => $id], ['isActive' => $isActive]);
+			$this->news_model->update(['id' => $id], ['isActive' => $isActive]);
 		}
 	}
 
@@ -186,7 +198,7 @@ class Product extends CI_Controller
 		$items = $order['order'];
 
 		foreach ($items as $rank => $id) {
-			$this->product_model->update(['id' => $id, 'rank !=' => $rank], ['rank' => $rank]);
+			$this->news_model->update(['id' => $id, 'rank !=' => $rank], ['rank' => $rank]);
 		}
 	}
 
@@ -207,7 +219,7 @@ class Product extends CI_Controller
 		$data = new stdClass();
 		$data->viewFolder = $this->viewFolder;
 		$data->subViewFolder = "image";
-		$data->product = $this->product_model->get(['id' => $id]);
+		$data->product = $this->news_model->get(['id' => $id]);
 		$data->product_images = $this->product_image_model->get_all(['product_id' => $id], 'rank ASC');
 
 		$this->load->view("{$data->viewFolder}/{$data->subViewFolder}/index", $data);
